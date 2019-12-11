@@ -12,6 +12,12 @@ The images are unaltered PNGs and labeled by spot ID.
 
 The masks (aka labels) are class coded PNGs (0 - Sky, 1 - Ocean, 2 - Ground) and also labeled by spot ID.
 
+Mask Legend (pre-mapped):
+
+- Sky (0)
+- Ocean (1)
+- Ground (2)
+
 ### Setup
 
 General requirements are:

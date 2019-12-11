@@ -1,15 +1,38 @@
-# get spots for all of california
-# GET https://services.surfline.com/taxonomy?type=taxonomy&id=58f7ed51dadb30820bb387a6&maxDepth=2
+"""Script for pulling a single frame from Surfline surfcams for a whole region"""
 
-# filter for each record in "contains", r["type"] == "spot"
+import os
+import time
+import requests
+import ffmpeg
 
-# for each of those spots, grab their spot ID (r["spot"])
+TIMESTAMP = int(time.time())
+DATA_DIR = os.path.dirname(__file__)
+REGION_ID = "58f7ed51dadb30820bb387a6"  # California
+URL = f"https://services.surfline.com/taxonomy?type=taxonomy&id={REGION_ID}&maxDepth=2"
 
-# using the batch endpoint, grab region overviews for each spot
-# POST https://services.surfline.com/kbyg/spots/batch
-# body: { spotIds: ["", ...] }
-# response: {..., "data": [{..., cameras: []}, ...]}
+taxonomy_response = requests.get(URL)
+json_taxonomy_response = taxonomy_response.json()
+geos = json_taxonomy_response["contains"]
 
-# for each spot with any cameras, grab one frame from spots' cameras' rewindUrl
-# save each image in PNG format in the "images" folder like "{spot_id}.png"
+spots = filter(lambda g: g["type"] == "spot", geos)
+spot_ids = list(map(lambda g: g["spot"], spots))
 
+batch_overview_response = requests.post(
+    "https://services.surfline.com/kbyg/spots/batch", json={"spotIds": spot_ids})
+json_batch_overview_response = batch_overview_response.json()
+json_overviews = json_batch_overview_response["data"]
+json_overviews_with_cameras = filter(
+    lambda s: len(s["cameras"]) > 0, json_overviews)
+
+for json_overview in json_overviews_with_cameras:
+    spot_id = json_overview["_id"]
+    rewind_url = json_overview["cameras"][0]["rewindClip"]
+
+    ffmpeg_fileformat = os.path.join(
+        DATA_DIR, f"images/{TIMESTAMP}_{spot_id}.png")
+
+    stream = ffmpeg.input(rewind_url)
+    stream = ffmpeg.output(stream, ffmpeg_fileformat, vframes=1)
+    stream.run()
+
+print("Complete")

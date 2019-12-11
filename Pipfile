@@ -6,6 +6,8 @@ verify_ssl = true
 [packages]
 requests = "*"
 ffmpeg-python = "*"
+numpy = "*"
+pillow = "*"
 
 [dev-packages]
 pytest = "*"
