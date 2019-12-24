@@ -10,29 +10,33 @@ DATA_DIR = os.path.dirname(__file__)
 REGION_ID = "58f7ed51dadb30820bb387a6"  # California
 URL = f"https://services.surfline.com/taxonomy?type=taxonomy&id={REGION_ID}&maxDepth=2"
 
-taxonomy_response = requests.get(URL)
-json_taxonomy_response = taxonomy_response.json()
-geos = json_taxonomy_response["contains"]
 
-spots = filter(lambda g: g["type"] == "spot", geos)
-spot_ids = list(map(lambda g: g["spot"], spots))
+def main():
+    taxonomy_response = requests.get(URL)
+    json_taxonomy_response = taxonomy_response.json()
+    geos = json_taxonomy_response["contains"]
 
-batch_overview_response = requests.post(
-    "https://services.surfline.com/kbyg/spots/batch", json={"spotIds": spot_ids})
-json_batch_overview_response = batch_overview_response.json()
-json_overviews = json_batch_overview_response["data"]
-json_overviews_with_cameras = filter(
-    lambda s: len(s["cameras"]) > 0, json_overviews)
+    spots = filter(lambda g: g["type"] == "spot", geos)
+    spot_ids = list(map(lambda g: g["spot"], spots))
 
-for json_overview in json_overviews_with_cameras:
-    spot_id = json_overview["_id"]
-    rewind_url = json_overview["cameras"][0]["rewindClip"]
+    batch_overview_response = requests.post(
+        "https://services.surfline.com/kbyg/spots/batch", json={"spotIds": spot_ids})
+    json_batch_overview_response = batch_overview_response.json()
+    json_overviews = json_batch_overview_response["data"]
+    json_overviews_with_cameras = filter(
+        lambda s: len(s["cameras"]) > 0, json_overviews)
 
-    ffmpeg_fileformat = os.path.join(
-        DATA_DIR, f"images/{TIMESTAMP}_{spot_id}.png")
+    for json_overview in json_overviews_with_cameras:
+        spot_id = json_overview["_id"]
+        rewind_url = json_overview["cameras"][0]["rewindClip"]
 
-    stream = ffmpeg.input(rewind_url)
-    stream = ffmpeg.output(stream, ffmpeg_fileformat, vframes=1)
-    stream.run()
+        ffmpeg_fileformat = os.path.join(
+            DATA_DIR, f"images/{TIMESTAMP}_{spot_id}.png")
 
-print("Complete")
+        stream = ffmpeg.input(rewind_url)
+        stream = ffmpeg.output(stream, ffmpeg_fileformat, vframes=1)
+        stream.run()
+
+    print("Complete")
+
+main()
