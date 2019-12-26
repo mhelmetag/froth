@@ -6,7 +6,7 @@ clean:
 compress-data:
 	@tar -czf data/images/images.tar.gz data/images/*.png
 	@tar -czf ml/images/images.tar.gz ml/images/*.png ml/images/*.json
-	@tar -czf ml/labels/labels.tar.gz ml.labels/*.png
+	@tar -czf ml/labels/labels.tar.gz ml/labels/*.png
 
 decompress-data:
 	@tar -xzf data/images/images.tar.gz
