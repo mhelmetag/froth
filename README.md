@@ -35,4 +35,10 @@ $ pipenv shell
 
 ## ML
 
-TBD
+### Info
+
+Results are relatively good. I think better labelling and more data will help a bunch. It looks like the coastline is getting predicted correctly most times so that's a big win (as that's the point of this exercise).
+
+![learning](.github/images/learning.png)
+
+![predictions](.github/images/predictions.png)
