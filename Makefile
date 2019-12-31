@@ -16,4 +16,7 @@ decompress-data:
 start-labelme:
 	@labelme ml/images --labels ml/codes.txt --nodata
 
+label-data:
+	@python ml/label_to_mask.py
+
 .PHONY: clean compress-data decompress-data start-labelme
