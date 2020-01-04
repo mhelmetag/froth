@@ -42,3 +42,5 @@ Results are relatively good. I think better labelling and more data will help a 
 ![learning](.github/images/learning.png)
 
 ![predictions](.github/images/predictions.png)
+
+![big-predictions](.github/images/big-predictions.png)
