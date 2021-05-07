@@ -4,7 +4,7 @@ Image segmentation for surfcams
 
 ## Data
 
-### Info
+### Data - Info
 
 Image gathering is done by region through the batch region API. From there, images are pulled from each cams rewind clip.
 
@@ -18,7 +18,7 @@ Mask Legend (pre-mapped):
 - Ocean (1)
 - Ground (2)
 
-### Setup
+### Data - Setup
 
 General requirements are:
 
@@ -29,13 +29,13 @@ General requirements are:
 Then:
 
 ```sh
-$ pipenv install
-$ pipenv shell
+pipenv install
+pipenv shell
 ```
 
 ## ML
 
-### Info
+### ML - Info
 
 Results are relatively good. I think better labelling and more data will help a bunch. It looks like the coastline is getting predicted correctly most times so that's a big win (as that's the point of this exercise).
 
@@ -44,3 +44,7 @@ Results are relatively good. I think better labelling and more data will help a 
 ![predictions](.github/images/predictions.png)
 
 ![big-predictions](.github/images/big-predictions.png)
+
+### ML - Setup
+
+I use Paperspace with the Fast.ai setup. There are other options though.
